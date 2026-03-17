@@ -1,0 +1,45 @@
+<script>
+const API = "https://script.google.com/macros/s/AKfycbw4tI9609yHdKe4LfMeYhQqE7FT5l3SXR28lyDSKmhz2RQrlOj4hyxlr7jE-EueL7Sn/exec";
+
+const params = new URLSearchParams(window.location.search);
+const slug = params.get("slug");
+
+let telefoneCorretor = "";
+
+async function carregarCorretor() {
+  const res = await fetch(API + "?slug=" + slug);
+  const data = await res.json();
+  
+  nome.innerText = data.nome;
+  creci.innerText = "CRECI: " + data.creci;
+  
+  telefoneCorretor = data.telefone;
+}
+
+carregarCorretor();
+
+formLead.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  
+  const data = {
+    tipo: "lead",
+    nome: leadNome.value,
+    endereco: endereco.value,
+    telefone: leadTelefone.value,
+    slug: slug
+  };
+  
+  await fetch(API, {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+  
+  const msg = `Quero cadastrar meu imóvel no QuintoAndar
+  
+Nome: ${leadNome.value}
+Endereço: ${endereco.value}
+Telefone: ${leadTelefone.value}`;
+
+  window.location.href = `https://wa.me/55${telefoneCorretor}?text=${encodeURIComponent(msg)}`;
+});
+</script>
