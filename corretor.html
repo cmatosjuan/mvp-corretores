@@ -1,37 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Página do Corretor</title>
+  <title>Corretor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #00a699;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .foto {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      margin-bottom: 10px;
+    }
+
+    .nome {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .creci {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .section {
+      padding: 20px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: #25D366;
+      color: white;
+      text-align: center;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 15px;
+      background: #00a699;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2 id="nome">Carregando...</h2>
-<p id="creci"></p>
+<div class="container">
 
-<hr>
+  <div class="header">
+    <img id="foto" class="foto" src="https://via.placeholder.com/100">
+    <div id="nome" class="nome">Carregando...</div>
+    <div id="creci" class="creci"></div>
+  </div>
 
-<h3>Cadastrar imóvel</h3>
+  <div class="section">
+    <a id="btnWhatsapp" class="btn" target="_blank">
+      Falar com corretor
+    </a>
+  </div>
 
-<form id="formLead">
-  <input placeholder="Seu nome" id="leadNome" required><br>
-  <input placeholder="Endereço" id="endereco" required><br>
-  <input placeholder="Telefone" id="leadTelefone" required><br>
-  
-  <button type="submit">Cadastrar imóvel</button>
-</form>
+  <div class="section">
+    <h3>Cadastrar meu imóvel</h3>
+
+    <form id="formLead">
+      <input placeholder="Seu nome" id="leadNome" required>
+      <input placeholder="Endereço" id="endereco" required>
+      <input placeholder="Telefone" id="leadTelefone" required>
+
+      <button type="submit">Cadastrar imóvel</button>
+    </form>
+  </div>
+
+</div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbw4tI9609yHdKe4LfMeYhQqE7FT5l3SXR28lyDSKmhz2RQrlOj4hyxlr7jE-EueL7Sn/exec";
 
-const params = new URLSearchParams(window.location.search);
-const slug = params.get("slug");
+const slug = new URLSearchParams(window.location.search).get("slug");
 
 let telefoneCorretor = "";
 
 // elementos
 const nomeEl = document.getElementById("nome");
 const creciEl = document.getElementById("creci");
-const formLead = document.getElementById("formLead");
+const fotoEl = document.getElementById("foto");
+const btnWhatsapp = document.getElementById("btnWhatsapp");
 
 // 🔹 carregar corretor
 async function carregarCorretor() {
@@ -40,68 +132,51 @@ async function carregarCorretor() {
 
   console.log("CORRETOR:", data);
 
-  nomeEl.innerText = data.nome || "Nome não encontrado";
-  creciEl.innerText = data.creci ? "CRECI: " + data.creci : "";
+  nomeEl.innerText = data.nome || "";
+  creciEl.innerText = "CRECI: " + (data.creci || "");
 
-  telefoneCorretor = data.telefone || "";
+  // 🔥 AQUI ENTRA A FOTO
+  if (data.foto) {
+    fotoEl.src = data.foto;
+  }
+
+  telefoneCorretor = (data.telefone || "").replace(/\D/g, "");
+
+  if (!telefoneCorretor.startsWith("55")) {
+    telefoneCorretor = "55" + telefoneCorretor;
+  }
+
+  btnWhatsapp.href = `https://wa.me/${telefoneCorretor}`;
 }
 
 carregarCorretor();
 
-// 🔹 enviar lead + abrir WhatsApp
-formLead.addEventListener("submit", async (e) => {
+// 🔹 submit
+document.getElementById("formLead").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const leadNome = document.getElementById("leadNome").value;
-  const endereco = document.getElementById("endereco").value;
-  const leadTelefone = document.getElementById("leadTelefone").value;
+  const nome = leadNome.value;
+  const endereco = endereco.value;
+  const telefone = leadTelefone.value;
 
-  const data = {
-    tipo: "lead",
-    nome: leadNome,
-    endereco: endereco,
-    telefone: leadTelefone,
-    slug: slug
-  };
+  await fetch(API, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify({
+      tipo: "lead",
+      nome,
+      endereco,
+      telefone,
+      slug
+    })
+  });
 
-  // salva no Sheets
-  try {
-    await fetch(API, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
-
-    console.log("Lead enviado");
-  } catch (error) {
-    console.error("Erro ao salvar lead:", error);
-  }
-
-  // mensagem
   const msg = `Quero cadastrar meu imóvel no QuintoAndar
-  
-Nome: ${leadNome}
+Nome: ${nome}
 Endereço: ${endereco}
-Telefone: ${leadTelefone}`;
+Telefone: ${telefone}`;
 
-  // limpa telefone
-  let telefoneLimpo = telefoneCorretor.replace(/\D/g, "");
-
-  if (!telefoneLimpo.startsWith("55")) {
-    telefoneLimpo = "55" + telefoneLimpo;
-  }
-
-  const url = `https://wa.me/${telefoneLimpo}?text=${encodeURIComponent(msg)}`;
-
-  // abre WhatsApp (com fallback)
-  window.open(url, "_blank");
-
-  setTimeout(() => {
-    window.location.href = url;
-  }, 500);
+  window.open(`https://wa.me/${telefoneCorretor}?text=${encodeURIComponent(msg)}`);
 });
 </script>
 
