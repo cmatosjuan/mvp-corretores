@@ -28,16 +28,17 @@ const slug = params.get("slug");
 
 let telefoneCorretor = "";
 
-// 🔹 pega elementos corretamente
+// elementos
 const nomeEl = document.getElementById("nome");
 const creciEl = document.getElementById("creci");
 const formLead = document.getElementById("formLead");
 
+// 🔹 carregar corretor
 async function carregarCorretor() {
   const res = await fetch(API + "?slug=" + slug);
   const data = await res.json();
 
-  console.log("DADOS DO CORRETOR:", data);
+  console.log("CORRETOR:", data);
 
   nomeEl.innerText = data.nome || "Nome não encontrado";
   creciEl.innerText = data.creci ? "CRECI: " + data.creci : "";
@@ -47,6 +48,7 @@ async function carregarCorretor() {
 
 carregarCorretor();
 
+// 🔹 enviar lead
 formLead.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -62,23 +64,38 @@ formLead.addEventListener("submit", async (e) => {
     slug: slug
   };
 
-  await fetch(API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
+  // envia pro Google Sheets
+  try {
+    await fetch(API, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
 
+    console.log("Lead enviado");
+  } catch (error) {
+    console.error("Erro:", error);
+  }
+
+  // mensagem whatsapp
   const msg = `Quero cadastrar meu imóvel no QuintoAndar
   
 Nome: ${leadNome}
 Endereço: ${endereco}
 Telefone: ${leadTelefone}`;
 
-  const telefoneLimpo = telefoneCorretor.replace(/\D/g, "");
+  // limpa telefone
+  let telefoneLimpo = telefoneCorretor.replace(/\D/g, "");
 
-  window.location.href = `https://wa.me/55${telefoneLimpo}?text=${encodeURIComponent(msg)}`;
+  if (!telefoneLimpo.startsWith("55")) {
+    telefoneLimpo = "55" + telefoneLimpo;
+  }
+
+  // redireciona pro WhatsApp
+  window.location.href = `https://wa.me/${telefoneLimpo}?text=${encodeURIComponent(msg)}`;
 });
 </script>
 
