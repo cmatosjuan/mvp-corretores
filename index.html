@@ -2,44 +2,136 @@
 <html>
 <head>
   <title>Cadastro Corretor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 15px;
+      background: #00a699;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    img {
+      width: 100px;
+      border-radius: 50%;
+      margin-top: 10px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Cadastro de Corretor</h2>
+<div class="container">
 
-<form id="formCorretor">
-  <input placeholder="Nome" id="nome" required><br>
-  <input placeholder="Telefone" id="telefone" required><br>
-  <input placeholder="CRECI" id="creci" required><br>
-  <input placeholder="Instagram" id="instagram"><br>
-  
-  <button type="submit">Cadastrar</button>
-</form>
+  <h2>Cadastro de Corretor</h2>
 
-<p id="resultado"></p>
+  <form id="formCorretor">
+    <input placeholder="Nome" id="nome" required>
+    <input placeholder="Telefone" id="telefone" required>
+    <input placeholder="CRECI" id="creci" required>
+    <input placeholder="Instagram" id="instagram">
+
+    <label>Foto do corretor</label>
+    <input type="file" id="foto" accept="image/*">
+
+    <img id="preview" style="display:none;">
+
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <p id="resultado"></p>
+
+</div>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbw4tI9609yHdKe4LfMeYhQqE7FT5l3SXR28lyDSKmhz2RQrlOj4hyxlr7jE-EueL7Sn/exec";
 
+// preview da imagem
+document.getElementById("foto").addEventListener("change", function () {
+  const file = this.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      const img = document.getElementById("preview");
+      img.src = e.target.result;
+      img.style.display = "block";
+    };
+
+    reader.readAsDataURL(file);
+  }
+});
+
+// submit
 document.getElementById("formCorretor").addEventListener("submit", async (e) => {
   e.preventDefault();
-  
+
+  const file = document.getElementById("foto").files[0];
+
+  let base64 = "";
+
+  if (file) {
+    if (file.size > 500000) {
+      alert("Imagem muito grande (máx 500kb)");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    base64 = await new Promise(resolve => {
+      reader.onload = () => resolve(reader.result);
+    });
+  }
+
   const data = {
     tipo: "corretor",
     nome: nome.value,
     telefone: telefone.value,
     creci: creci.value,
-    instagram: instagram.value
+    instagram: instagram.value,
+    foto: base64
   };
-  
+
   const res = await fetch(API, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   });
-  
+
   const json = await res.json();
-  
-  resultado.innerHTML = "Sua página: <a href='" + json.url + "'>" + json.url + "</a>";
+
+  resultado.innerHTML = `<a href="${json.url}">Acessar página do corretor</a>`;
 });
 </script>
 
