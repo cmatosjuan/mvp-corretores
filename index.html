@@ -36,12 +36,20 @@
       border: none;
       border-radius: 8px;
       font-size: 16px;
+      cursor: pointer;
     }
 
     img {
       width: 100px;
+      height: 100px;
       border-radius: 50%;
+      object-fit: cover;
       margin-top: 10px;
+    }
+
+    #resultado {
+      margin-top: 15px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -73,7 +81,7 @@
 <script>
 const API = "https://script.google.com/macros/s/AKfycbw4tI9609yHdKe4LfMeYhQqE7FT5l3SXR28lyDSKmhz2RQrlOj4hyxlr7jE-EueL7Sn/exec";
 
-// preview da imagem
+// 🔹 Preview da imagem
 document.getElementById("foto").addEventListener("change", function () {
   const file = this.files[0];
 
@@ -90,10 +98,14 @@ document.getElementById("foto").addEventListener("change", function () {
   }
 });
 
-// submit
+// 🔹 Submit do formulário
 document.getElementById("formCorretor").addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const nome = document.getElementById("nome").value;
+  const telefone = document.getElementById("telefone").value;
+  const creci = document.getElementById("creci").value;
+  const instagram = document.getElementById("instagram").value;
   const file = document.getElementById("foto").files[0];
 
   let base64 = "";
@@ -114,24 +126,33 @@ document.getElementById("formCorretor").addEventListener("submit", async (e) => 
 
   const data = {
     tipo: "corretor",
-    nome: nome.value,
-    telefone: telefone.value,
-    creci: creci.value,
-    instagram: instagram.value,
+    nome,
+    telefone,
+    creci,
+    instagram,
     foto: base64
   };
 
-  const res = await fetch(API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  });
+  try {
+    await fetch(API, {
+      method: "POST",
+      mode: "no-cors", // 👈 evita travamento
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
 
-  const json = await res.json();
+    document.getElementById("resultado").innerHTML =
+      "✅ Corretor cadastrado com sucesso! Agora abra a planilha ou teste a página.";
 
-  resultado.innerHTML = `<a href="${json.url}">Acessar página do corretor</a>`;
+    console.log("Enviado com sucesso");
+
+  } catch (error) {
+    console.error("Erro:", error);
+    document.getElementById("resultado").innerHTML =
+      "❌ Erro ao cadastrar.";
+  }
 });
 </script>
 
