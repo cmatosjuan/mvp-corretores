@@ -35,13 +35,13 @@
     }
 
     .nome {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
     }
 
     .creci {
       font-size: 14px;
-      opacity: 0.8;
+      opacity: 0.9;
     }
 
     .section {
@@ -67,6 +67,7 @@
       margin-top: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 14px;
     }
 
     button {
@@ -78,6 +79,7 @@
       border: none;
       border-radius: 8px;
       font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -86,18 +88,21 @@
 
 <div class="container">
 
+  <!-- HEADER -->
   <div class="header">
     <img id="foto" class="foto" src="https://via.placeholder.com/100">
     <div id="nome" class="nome">Carregando...</div>
     <div id="creci" class="creci"></div>
   </div>
 
+  <!-- BOTÃO WHATSAPP -->
   <div class="section">
     <a id="btnWhatsapp" class="btn" target="_blank">
       Falar com corretor
     </a>
   </div>
 
+  <!-- FORM -->
   <div class="section">
     <h3>Cadastrar meu imóvel</h3>
 
@@ -125,7 +130,7 @@ const creciEl = document.getElementById("creci");
 const fotoEl = document.getElementById("foto");
 const btnWhatsapp = document.getElementById("btnWhatsapp");
 
-// 🔹 carregar corretor
+// 🔹 carregar dados do corretor
 async function carregarCorretor() {
   const res = await fetch(API + "?slug=" + slug);
   const data = await res.json();
@@ -135,7 +140,6 @@ async function carregarCorretor() {
   nomeEl.innerText = data.nome || "";
   creciEl.innerText = "CRECI: " + (data.creci || "");
 
-  // 🔥 AQUI ENTRA A FOTO
   if (data.foto) {
     fotoEl.src = data.foto;
   }
@@ -151,14 +155,15 @@ async function carregarCorretor() {
 
 carregarCorretor();
 
-// 🔹 submit
+// 🔹 enviar lead + abrir WhatsApp
 document.getElementById("formLead").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const nome = leadNome.value;
-  const endereco = endereco.value;
-  const telefone = leadTelefone.value;
+  const nome = document.getElementById("leadNome").value;
+  const endereco = document.getElementById("endereco").value;
+  const telefone = document.getElementById("leadTelefone").value;
 
+  // salva no Sheets
   await fetch(API, {
     method: "POST",
     mode: "no-cors",
@@ -171,11 +176,13 @@ document.getElementById("formLead").addEventListener("submit", async (e) => {
     })
   });
 
+  // mensagem
   const msg = `Quero cadastrar meu imóvel no QuintoAndar
 Nome: ${nome}
 Endereço: ${endereco}
 Telefone: ${telefone}`;
 
+  // abre WhatsApp
   window.open(`https://wa.me/${telefoneCorretor}?text=${encodeURIComponent(msg)}`);
 });
 </script>
