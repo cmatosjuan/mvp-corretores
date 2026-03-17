@@ -4,134 +4,261 @@
   <title>QuintoAndar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <!-- FONTE REAL -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
-      font-family: Inter, Arial;
-      background: #f7f7f7;
+      font-family: 'Inter', sans-serif;
+      background: #f6f7fb;
+      color: #1a1a1a;
     }
 
-    .wrapper {
-      max-width: 420px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .card {
+    /* HEADER */
+    .topbar {
       background: white;
-      border-radius: 16px;
-      padding: 24px;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      font-size: 18px;
+      border-bottom: 1px solid #eee;
     }
 
-    .logo {
-      font-size: 12px;
-      color: #666;
-      margin-bottom: 16px;
+    /* HERO */
+    .hero {
+      background: #3f5bd8;
+      height: 240px;
+      position: relative;
     }
 
     .foto {
-      width: 120px;
-      height: 120px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
       object-fit: cover;
-      margin-bottom: 12px;
+      position: absolute;
+      left: 80px;
+      bottom: -75px;
+      border: 4px solid white;
+    }
+
+    .cta-top {
+      position: absolute;
+      right: 80px;
+      top: 90px;
+      background: white;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      text-decoration: none;
+      color: #1a1a1a;
+      font-weight: 500;
+      border: 1px solid #e6e6e6;
+      transition: 0.2s;
+    }
+
+    .cta-top:hover {
+      background: #f3f3f3;
+    }
+
+    /* CARD */
+    .card {
+      background: white;
+      max-width: 900px;
+      margin: 110px auto 30px;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
     }
 
     .nome {
-      font-size: 20px;
+      font-size: 28px;
       font-weight: 600;
     }
 
-    .creci {
+    .linha {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .linha a {
+      color: #3f5bd8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .linha a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      margin: 24px 0;
+      border-top: 1px solid #eee;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    /* VANTAGENS */
+    .vantagens-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      margin-top: 40px;
+    }
+
+    .cards {
+      display: flex;
+      gap: 24px;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .box {
+      flex: 1;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #eee;
+    }
+
+    .box-title {
+      font-weight: 600;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .box-sub {
+      text-align: center;
       font-size: 13px;
       color: #777;
-      margin-top: 4px;
+      margin-bottom: 16px;
     }
 
-    .cta {
-      margin-top: 16px;
-      background: #25D366;
-      color: white;
-      padding: 14px;
-      border-radius: 10px;
-      text-decoration: none;
-      display: block;
-      font-weight: 600;
+    .check {
+      font-size: 14px;
+      margin: 12px 0;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
     }
 
-    .form {
-      margin-top: 24px;
-      text-align: left;
+    .check::before {
+      content: "✓";
+      color: #3f5bd8;
+      font-weight: bold;
+      margin-top: 2px;
     }
 
-    input {
-      width: 100%;
-      padding: 14px;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
+    /* FOOTER */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+      margin: 50px 0;
     }
 
-    button {
-      width: 100%;
-      margin-top: 16px;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: black;
-      color: white;
-      font-weight: 600;
+    footer div {
+      margin: 6px 0;
     }
 
-    .title {
-      font-size: 18px;
-      margin-top: 24px;
-      font-weight: 600;
-    }
+    /* MOBILE */
+    @media(max-width: 768px) {
+      .foto {
+        left: 50%;
+        transform: translateX(-50%);
+      }
 
-    .subtitle {
-      font-size: 13px;
-      color: #666;
-      margin-top: 4px;
+      .cta-top {
+        display: none;
+      }
+
+      .cards {
+        flex-direction: column;
+      }
+
+      .card {
+        margin-top: 130px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<div class="wrapper">
+<div class="topbar">
+  QuintoAndar
+</div>
 
-  <div class="card">
-    <div class="logo">QuintoAndar</div>
+<div class="hero">
+  <img id="foto" class="foto">
+  <a id="ctaTop" class="cta-top">Cadastrar imóvel</a>
+</div>
 
-    <img id="foto" class="foto">
+<div class="card">
+  <div id="nome" class="nome"></div>
 
-    <div id="nome" class="nome"></div>
-    <div id="creci" class="creci"></div>
-
-    <a id="btnWhatsapp" class="cta" target="_blank">
-      Falar com especialista
-    </a>
+  <div class="linha">
+    <span>Corretor Associado • CRECI: <span id="creci"></span></span>
+    <span style="color:#3f5bd8;">✔</span>
   </div>
 
-  <div class="card form">
-    <div class="title">Quer anunciar seu imóvel?</div>
-    <div class="subtitle">
-      Receba contato de um especialista do QuintoAndar
-    </div>
+  <div class="linha">
+    <span id="telefone"></span>
+    • <a id="instagram" target="_blank"></a>
+  </div>
 
-    <form id="formLead">
-      <input placeholder="Seu nome" id="leadNome" required>
-      <input placeholder="Endereço do imóvel" id="endereco" required>
-      <input placeholder="Seu telefone" id="leadTelefone" required>
+  <div class="divider"></div>
 
-      <button type="submit">Quero anunciar</button>
-    </form>
+  <div class="section-title">Especialidade</div>
+  <div class="linha">Captação de imóveis para Aluguel e Venda</div>
+
+  <div class="section-title">Área de atuação</div>
+  <div class="linha">São Paulo - Zona Sul</div>
+</div>
+
+<div class="vantagens-title">
+  Vantagens de anunciar no QuintoAndar
+</div>
+
+<div class="cards">
+
+  <div class="box">
+    <div class="box-title">Para Aluguel</div>
+    <div class="box-sub">Para você que procura locar seu imóvel</div>
+
+    <div class="check">Receba sempre em dia: o valor do aluguel é depositado até o dia 12</div>
+    <div class="check">Sem fiador: análise de crédito feita pelo QuintoAndar amplia as chances</div>
+    <div class="check">Fotos profissionais gratuitas</div>
+    <div class="check">Cobertura contra danos de até R$ 50 mil</div>
+  </div>
+
+  <div class="box">
+    <div class="box-title">Para Venda</div>
+    <div class="box-sub">Para você que procura vender seu imóvel</div>
+
+    <div class="check">Mais visibilidade para compradores</div>
+    <div class="check">Menos burocracia: processo simples e digital</div>
+    <div class="check">Negociação facilitada</div>
+    <div class="check">Segurança na transação</div>
   </div>
 
 </div>
+
+<footer>
+  <div>Aviso de privacidade • Termos e condições de uso • Política de Cookie • Manual do usuário</div>
+  <div>GRPQA LTDA. CRECI-SP J24.344 • Ver outros</div>
+</footer>
 
 <script>
 const API = "https://script.google.com/macros/s/AKfycbw4tI9609yHdKe4LfMeYhQqE7FT5l3SXR28lyDSKmhz2RQrlOj4hyxlr7jE-EueL7Sn/exec";
@@ -140,56 +267,35 @@ const slug = new URLSearchParams(window.location.search).get("slug");
 
 let telefoneCorretor = "";
 
-async function carregarCorretor() {
+async function carregar() {
   const res = await fetch(API + "?slug=" + slug);
   const data = await res.json();
 
   document.getElementById("nome").innerText = data.nome;
-  document.getElementById("creci").innerText = "CRECI: " + data.creci;
+  document.getElementById("creci").innerText = data.creci;
+  document.getElementById("telefone").innerText = data.telefone;
 
   if (data.foto) {
     document.getElementById("foto").src = data.foto;
   }
 
   telefoneCorretor = (data.telefone || "").replace(/\D/g, "");
-
   if (!telefoneCorretor.startsWith("55")) {
     telefoneCorretor = "55" + telefoneCorretor;
   }
 
-  document.getElementById("btnWhatsapp").href =
-    `https://wa.me/${telefoneCorretor}`;
+  const link = `https://wa.me/${telefoneCorretor}`;
+  document.getElementById("ctaTop").href = link;
+
+  if (data.instagram) {
+    document.getElementById("instagram").href =
+      `https://instagram.com/${data.instagram}`;
+    document.getElementById("instagram").innerText =
+      "@" + data.instagram;
+  }
 }
 
-carregarCorretor();
-
-// submit
-document.getElementById("formLead").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const nome = leadNome.value;
-  const endereco = endereco.value;
-  const telefone = leadTelefone.value;
-
-  await fetch(API, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify({
-      tipo: "lead",
-      nome,
-      endereco,
-      telefone,
-      slug
-    })
-  });
-
-  const msg = `Quero anunciar meu imóvel
-Nome: ${nome}
-Endereço: ${endereco}
-Telefone: ${telefone}`;
-
-  window.open(`https://wa.me/${telefoneCorretor}?text=${encodeURIComponent(msg)}`);
-});
+carregar();
 </script>
 
 </body>
