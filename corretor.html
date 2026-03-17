@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Página do Corretor</title>
+</head>
+<body>
+
+<h2 id="nome">Carregando...</h2>
+<p id="creci"></p>
+
+<hr>
+
+<h3>Cadastrar imóvel</h3>
+
+<form id="formLead">
+  <input placeholder="Seu nome" id="leadNome" required><br>
+  <input placeholder="Endereço" id="endereco" required><br>
+  <input placeholder="Telefone" id="leadTelefone" required><br>
+  
+  <button type="submit">Cadastrar imóvel</button>
+</form>
+
 <script>
 const API = "https://script.google.com/macros/s/AKfycbw4tI9609yHdKe4LfMeYhQqE7FT5l3SXR28lyDSKmhz2RQrlOj4hyxlr7jE-EueL7Sn/exec";
 
@@ -6,40 +28,59 @@ const slug = params.get("slug");
 
 let telefoneCorretor = "";
 
+// 🔹 pega elementos corretamente
+const nomeEl = document.getElementById("nome");
+const creciEl = document.getElementById("creci");
+const formLead = document.getElementById("formLead");
+
 async function carregarCorretor() {
   const res = await fetch(API + "?slug=" + slug);
   const data = await res.json();
-  
-  nome.innerText = data.nome;
-  creci.innerText = "CRECI: " + data.creci;
-  
-  telefoneCorretor = data.telefone;
+
+  console.log("DADOS DO CORRETOR:", data);
+
+  nomeEl.innerText = data.nome || "Nome não encontrado";
+  creciEl.innerText = data.creci ? "CRECI: " + data.creci : "";
+
+  telefoneCorretor = data.telefone || "";
 }
 
 carregarCorretor();
 
 formLead.addEventListener("submit", async (e) => {
   e.preventDefault();
-  
+
+  const leadNome = document.getElementById("leadNome").value;
+  const endereco = document.getElementById("endereco").value;
+  const leadTelefone = document.getElementById("leadTelefone").value;
+
   const data = {
     tipo: "lead",
-    nome: leadNome.value,
-    endereco: endereco.value,
-    telefone: leadTelefone.value,
+    nome: leadNome,
+    endereco: endereco,
+    telefone: leadTelefone,
     slug: slug
   };
-  
+
   await fetch(API, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   });
-  
+
   const msg = `Quero cadastrar meu imóvel no QuintoAndar
   
-Nome: ${leadNome.value}
-Endereço: ${endereco.value}
-Telefone: ${leadTelefone.value}`;
+Nome: ${leadNome}
+Endereço: ${endereco}
+Telefone: ${leadTelefone}`;
 
-  window.location.href = `https://wa.me/55${telefoneCorretor}?text=${encodeURIComponent(msg)}`;
+  const telefoneLimpo = telefoneCorretor.replace(/\D/g, "");
+
+  window.location.href = `https://wa.me/55${telefoneLimpo}?text=${encodeURIComponent(msg)}`;
 });
 </script>
+
+</body>
+</html>
