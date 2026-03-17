@@ -1,117 +1,133 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Corretor</title>
+  <title>QuintoAndar</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       margin: 0;
-      font-family: Arial;
-      background: #f5f5f5;
+      font-family: Inter, Arial;
+      background: #f7f7f7;
     }
 
-    .container {
-      max-width: 500px;
+    .wrapper {
+      max-width: 420px;
       margin: auto;
-      background: white;
-      min-height: 100vh;
-    }
-
-    .header {
-      background: #00a699;
-      color: white;
-      text-align: center;
-      padding: 30px 20px;
-    }
-
-    .foto {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid white;
-      margin-bottom: 10px;
-    }
-
-    .nome {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .creci {
-      font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .section {
       padding: 20px;
     }
 
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 15px;
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+    .foto {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 12px;
+    }
+
+    .nome {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .creci {
+      font-size: 13px;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    .cta {
+      margin-top: 16px;
       background: #25D366;
       color: white;
-      text-align: center;
-      border-radius: 8px;
+      padding: 14px;
+      border-radius: 10px;
       text-decoration: none;
-      font-weight: bold;
-      margin-top: 10px;
+      display: block;
+      font-weight: 600;
+    }
+
+    .form {
+      margin-top: 24px;
+      text-align: left;
     }
 
     input {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       margin-top: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
     }
 
     button {
       width: 100%;
-      padding: 15px;
-      margin-top: 15px;
-      background: #00a699;
-      color: white;
+      margin-top: 16px;
+      padding: 14px;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
+      border-radius: 10px;
+      background: black;
+      color: white;
+      font-weight: 600;
+    }
+
+    .title {
+      font-size: 18px;
+      margin-top: 24px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
     }
   </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="wrapper">
 
-  <!-- HEADER -->
-  <div class="header">
-    <img id="foto" class="foto" src="https://via.placeholder.com/100">
-    <div id="nome" class="nome">Carregando...</div>
+  <div class="card">
+    <div class="logo">QuintoAndar</div>
+
+    <img id="foto" class="foto">
+
+    <div id="nome" class="nome"></div>
     <div id="creci" class="creci"></div>
-  </div>
 
-  <!-- BOTÃO WHATSAPP -->
-  <div class="section">
-    <a id="btnWhatsapp" class="btn" target="_blank">
-      Falar com corretor
+    <a id="btnWhatsapp" class="cta" target="_blank">
+      Falar com especialista
     </a>
   </div>
 
-  <!-- FORM -->
-  <div class="section">
-    <h3>Cadastrar meu imóvel</h3>
+  <div class="card form">
+    <div class="title">Quer anunciar seu imóvel?</div>
+    <div class="subtitle">
+      Receba contato de um especialista do QuintoAndar
+    </div>
 
     <form id="formLead">
       <input placeholder="Seu nome" id="leadNome" required>
-      <input placeholder="Endereço" id="endereco" required>
-      <input placeholder="Telefone" id="leadTelefone" required>
+      <input placeholder="Endereço do imóvel" id="endereco" required>
+      <input placeholder="Seu telefone" id="leadTelefone" required>
 
-      <button type="submit">Cadastrar imóvel</button>
+      <button type="submit">Quero anunciar</button>
     </form>
   </div>
 
@@ -124,24 +140,15 @@ const slug = new URLSearchParams(window.location.search).get("slug");
 
 let telefoneCorretor = "";
 
-// elementos
-const nomeEl = document.getElementById("nome");
-const creciEl = document.getElementById("creci");
-const fotoEl = document.getElementById("foto");
-const btnWhatsapp = document.getElementById("btnWhatsapp");
-
-// 🔹 carregar dados do corretor
 async function carregarCorretor() {
   const res = await fetch(API + "?slug=" + slug);
   const data = await res.json();
 
-  console.log("CORRETOR:", data);
-
-  nomeEl.innerText = data.nome || "";
-  creciEl.innerText = "CRECI: " + (data.creci || "");
+  document.getElementById("nome").innerText = data.nome;
+  document.getElementById("creci").innerText = "CRECI: " + data.creci;
 
   if (data.foto) {
-    fotoEl.src = data.foto;
+    document.getElementById("foto").src = data.foto;
   }
 
   telefoneCorretor = (data.telefone || "").replace(/\D/g, "");
@@ -150,20 +157,20 @@ async function carregarCorretor() {
     telefoneCorretor = "55" + telefoneCorretor;
   }
 
-  btnWhatsapp.href = `https://wa.me/${telefoneCorretor}`;
+  document.getElementById("btnWhatsapp").href =
+    `https://wa.me/${telefoneCorretor}`;
 }
 
 carregarCorretor();
 
-// 🔹 enviar lead + abrir WhatsApp
+// submit
 document.getElementById("formLead").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const nome = document.getElementById("leadNome").value;
-  const endereco = document.getElementById("endereco").value;
-  const telefone = document.getElementById("leadTelefone").value;
+  const nome = leadNome.value;
+  const endereco = endereco.value;
+  const telefone = leadTelefone.value;
 
-  // salva no Sheets
   await fetch(API, {
     method: "POST",
     mode: "no-cors",
@@ -176,13 +183,11 @@ document.getElementById("formLead").addEventListener("submit", async (e) => {
     })
   });
 
-  // mensagem
-  const msg = `Quero cadastrar meu imóvel no QuintoAndar
+  const msg = `Quero anunciar meu imóvel
 Nome: ${nome}
 Endereço: ${endereco}
 Telefone: ${telefone}`;
 
-  // abre WhatsApp
   window.open(`https://wa.me/${telefoneCorretor}?text=${encodeURIComponent(msg)}`);
 });
 </script>
