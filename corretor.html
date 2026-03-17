@@ -48,7 +48,7 @@ async function carregarCorretor() {
 
 carregarCorretor();
 
-// 🔹 enviar lead
+// 🔹 enviar lead + abrir WhatsApp
 formLead.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -64,7 +64,7 @@ formLead.addEventListener("submit", async (e) => {
     slug: slug
   };
 
-  // envia pro Google Sheets
+  // salva no Sheets
   try {
     await fetch(API, {
       method: "POST",
@@ -77,10 +77,10 @@ formLead.addEventListener("submit", async (e) => {
 
     console.log("Lead enviado");
   } catch (error) {
-    console.error("Erro:", error);
+    console.error("Erro ao salvar lead:", error);
   }
 
-  // mensagem whatsapp
+  // mensagem
   const msg = `Quero cadastrar meu imóvel no QuintoAndar
   
 Nome: ${leadNome}
@@ -94,8 +94,14 @@ Telefone: ${leadTelefone}`;
     telefoneLimpo = "55" + telefoneLimpo;
   }
 
-  // redireciona pro WhatsApp
-  window.location.href = `https://wa.me/${telefoneLimpo}?text=${encodeURIComponent(msg)}`;
+  const url = `https://wa.me/${telefoneLimpo}?text=${encodeURIComponent(msg)}`;
+
+  // abre WhatsApp (com fallback)
+  window.open(url, "_blank");
+
+  setTimeout(() => {
+    window.location.href = url;
+  }, 500);
 });
 </script>
 
